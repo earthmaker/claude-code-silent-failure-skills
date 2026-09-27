@@ -68,7 +68,7 @@ all read as "just wait", so nobody looks again.
 
 - Validating an Instagram long-lived token against `graph.facebook.com/debug_token` returned
   `Service temporarily unavailable · is_transient: true`. **It was not temporary** — that host cannot even parse that
-  token type. `graph.instagram.com/me` returned 200. The "transient remote error" verdict stood for **18 days**,
+  token type. `graph.instagram.com/me` returned 200. The "transient remote error" verdict stood for **weeks**,
   during which the token-expiry guard never evaluated anything.
 - Treat any "transient" label as a claim to test, not a fact: a wrong host, token type or resource ID can produce it.
 
@@ -115,7 +115,10 @@ A file visible in `ls` returned nothing from `glob("*<Korean word>*.pdf")`, and 
 import os, unicodedata as ud
 want = ud.normalize("NFC", name)
 hit = [f for f in os.listdir(d) if ud.normalize("NFC", f) == want]
+# for a glob-style partial match: [f for f in os.listdir(d) if want in ud.normalize("NFC", f)]
 ```
+
+Opening a file by its exact name usually works either way (APFS normalizes lookups); what leaks is **listing and pattern matching** — `glob`, `find -name`, `ls | grep`.
 
 ## When a person says "it's not there"
 

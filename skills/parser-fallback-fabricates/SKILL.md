@@ -63,7 +63,7 @@ doesn't help". In fact the payload builder picked columns selectively and the ne
 row = {"d_mean": float(rec.get("d_mean_lp") or rec.get("mean_lp"))}   # ← silently the old value
 ```
 
-No error. What caught it was an **exact match** — identical to the fourth decimal. "No improvement" and "nothing changed" differ.
+No error. (And `or` also discards a legitimate new value of `0.0`, which is falsy.) What caught it was an **exact match** — identical to the fourth decimal. "No improvement" and "nothing changed" differ.
 
 - When testing something new, **measure the old thing in the same run**. If the old value reproduces, the wiring is right;
   if the new value is **exactly** the old one, that's a fault, not a result.

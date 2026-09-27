@@ -39,9 +39,10 @@ There's usually no API, so a person downloads results and hands over files — w
    sets `--budget` from it, and the code still does steps 3–5.
 2. **If the estimate exceeds the balance, don't call — exit.**
 3. **If the estimate exceeds the cap, don't call — exit.** Balance answers "can I", the cap answers "should I". Both must pass.
-4. **Accumulate and print the actual charge per call** — the value the response returned (e.g. OpenRouter's `usage.cost`, where the provider returns usage accounting), not an estimate.
+4. **Accumulate and print the actual charge per call** — the value the response returned (e.g. the `usage.cost` field in OpenRouter responses), not an estimate.
    If the response has no amount, accumulate tokens and convert with **a unit price annotated with the date you checked it**.
-5. **Stop before the next call would cross the cap** — not after. `if spent + unit_cost > budget: break`
+5. **Stop before the next call would cross the cap** — not after. Judge the next call by the **largest actual charge seen so far**, not the probe price:
+   `if spent + max(probe, worst_seen) > budget: break`. Judging by the probe price overshoots exactly when the real price is higher — the case this skill exists for.
 
 ⚠️ **Balances can go negative.** One test image took a balance to −$0.17. Blocking after the fact is not blocking.
 
@@ -90,12 +91,13 @@ def run(items, budget, unit_cost_probe):
     est = unit_cost_probe * len(items)
     if est > bal:    sys.exit(f"insufficient balance: est ${est:.2f} > ${bal:.2f}")
     if est > budget: sys.exit(f"over cap: est ${est:.2f} > ${budget:.2f}")
-    spent, fails = 0.0, []
+    spent, worst, fails = 0.0, unit_cost_probe, []
     for it in items:
-        if spent + unit_cost_probe > budget:     # 5. stop before crossing
+        if spent + worst > budget:               # 5. stop before crossing, using the worst price seen
             print(f"cap reached — spent {spent:.4f}, rest not run"); break
         out, cost, reason = generate(it)         # returns the actual charge
         spent += cost or 0.0
+        worst = max(worst, cost or 0.0)
         if out is None: fails.append((it, reason))
         print(f"spent ${spent:.4f}")             # 4.
     print(f"{len(fails)} failed: {fails[:5]}")

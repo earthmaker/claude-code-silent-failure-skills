@@ -40,7 +40,7 @@ At the same moment the custom domain said otherwise.
 | `<project>.pages.dev` | `max-age=3600` ← what we wrote |
 | `img.<custom-domain>` | **`max-age=14400`** ← overridden by the CDN zone |
 
-The Cloudflare zone's Browser Cache TTL default (4 hours) took precedence over the origin header. Published URLs used the custom
+The Cloudflare zone's Browser Cache TTL (default 4 hours) took precedence over the origin header — it overrides origin values shorter than itself unless the zone is set to respect existing headers. Published URLs used the custom
 domain, so the real value was four times ours.
 
 → **If visitors reach you through several paths, measure all of them side by side.** When the overriding value is a default,

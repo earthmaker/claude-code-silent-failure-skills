@@ -68,7 +68,9 @@ import hashlib, json, pathlib, sys
 def guarded_write(out_path, data: bytes, force=False):
     out = pathlib.Path(out_path)
     stamp = out.with_suffix(out.suffix + ".buildhash")
-    if out.exists() and stamp.exists() and not force:
+    if out.exists() and not force:
+        if not stamp.exists():   # first run with the guard: we can't tell who wrote this file
+            sys.exit(f"{out} exists but has no build stamp — it may be a human copy. Refusing without --force.")
         if hashlib.sha256(out.read_bytes()).hexdigest() != json.loads(stamp.read_text())["sha256"]:
             sys.exit(f"{out} changed since the last build — someone may have edited it. Refusing without --force.")
     out.write_bytes(data)

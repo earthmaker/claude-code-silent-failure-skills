@@ -126,7 +126,7 @@ I plugged a score into a closed form `S = f(m, t)`. `m` was a value I had set, s
 - **A loop's counter after every iteration died** — all five iterations raised `TypeError`, yet the summary printed "0/5".
   → Print **how many were actually evaluated** next to any tally.
 - **The tool doesn't know the option** — `grep -rPo "Name(?!ing)" … | wc -l` on BSD grep: no `-P`, usage went to stderr,
-  `wc` counted the empty stdout and printed **0**. `set -o pipefail` doesn't help (the last command is `wc`).
+  `wc` counted the empty stdout and printed **0**. `set -o pipefail` does make the pipeline's exit status non-zero (2) — but the screen still shows **0**, so anyone reading the number rather than the exit status misses it.
   → Run a zero-result check once **on input built to match**. Prefer arithmetic: if `grep -o "Name"` equals `grep -o "Naming"`, zero plain "Name" remain.
 
 ## 9 — Word-boundary patterns die at one length
@@ -140,6 +140,7 @@ grep -aowE "JSON" x.txt | wc -l                                   # ✅ 1
 
 Three- and eight-letter words (`SQL`, `Postgres`) worked, so a badly chosen sample hides the defect. Without boundaries you fail the other way:
 `API` also matches inside `RAPID`. **Short uppercase acronyms can be wrong in both directions** — compute both and open the source if they differ.
+Workarounds that counted correctly in the same test: `-w`, a `-P` pattern with lookarounds, or the Python regex below.
 Choose positive controls **shaped like what you're looking for**.
 
 ## Related
