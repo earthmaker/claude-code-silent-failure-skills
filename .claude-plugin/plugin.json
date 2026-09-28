@@ -1,0 +1,10 @@
+{
+  "name": "silent-failure-skills",
+  "description": "Skills for failures that raise no error: false 'not found', leaky exhaustive checks, stale duplicates, fabricating parser fallbacks, settings that never ship, rebuilds over human edits, and unguarded paid API calls.",
+  "version": "1.0.0",
+  "author": { "name": "earthmaker", "url": "https://github.com/earthmaker" },
+  "homepage": "https://github.com/earthmaker/claude-code-silent-failure-skills",
+  "repository": "https://github.com/earthmaker/claude-code-silent-failure-skills",
+  "license": "CC-BY-4.0",
+  "keywords": ["verification", "silent-failure", "agent-reliability", "skills"]
+}

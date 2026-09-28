@@ -1,0 +1,15 @@
+{
+  "name": "silent-failure",
+  "description": "Claude Code skills for agent failures that raise no error.",
+  "owner": {
+    "name": "earthmaker",
+    "url": "https://github.com/earthmaker"
+  },
+  "plugins": [
+    {
+      "name": "silent-failure-skills",
+      "source": "./",
+      "description": "Seven skills for agent failures that raise no error."
+    }
+  ]
+}
